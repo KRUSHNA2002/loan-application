@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Loan Application</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      form {
+        background: #fff;
+        width: 500px;
+        padding: 50px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      }
+      label,
+      input {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+      button {
+        padding: 10px;
+        width: auto;
+        background: #28a745;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      .btn {
+        text-align: center;
+      }
+      button:hover {
+        background: #218838;
+      }
+    </style>
+  </head>
+  <body>
+    <form id="form">
+      <label for="name">Full Name</label>
+      <input type="text" id="name" placeholder="Enter your full name" />
+
+      <label for="email">Email</label>
+      <input type="text" id="email" placeholder="Enter your email" />
+
+      <label for="pan">PAN</label>
+      <input type="text" id="pan" placeholder="Enter your PAN number" />
+
+      <label for="mobile">Mobile</label>
+      <input type="text" id="mobile" placeholder="Enter your mobile" />
+
+      <label for="">Password</label>
+      <input type="password" id="password" placeholder="Enter your password" />
+
+      <label for="loanAmount">Loan Amount</label>
+      <input type="text" id="loanAmount" placeholder="Enter loan amount" />
+
+      <p id="estimatedEMI"></p>
+      <div class="btn">
+        <button type="button" onclick="submitForm()">Submit</button>
+      </div>
+    </form>
+
+    <script>
+      function validateName(name) {
+        const regex = /^[a-zA-Z]{4,}\s[a-zA-Z\s]{4,}$/;
+        return regex.test(name);
+      }
+
+      function validateEmail(email) {
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        return regex.test(email);
+      }
+
+      function validatePAN(pan) {
+        const regex = /^[A-Z]{5}[0-9]{4}[A-Z]$/;
+        return regex.test(pan);
+      }
+
+      function validateMobile(mobile) {
+        const regex = /^\d{10}$/;
+        return regex.test(mobile);
+      }
+
+      function validatePassword(password) {
+        const regex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+        return regex.test(password);
+      }
+
+      function validateLoanAmount(amount) {
+        const regex = /^\d{1,9}$/;
+        return regex.test(amount);
+      }
+
+      function calculateEMI(principal) {
+        const interestRate = 8.5 / 1200; // monthly interest rate
+        const tenure = 15 * 12; // number of monthly installments
+        const emi =
+          (principal * interestRate * Math.pow(1 + interestRate, tenure)) /
+          (Math.pow(1 + interestRate, tenure) - 1);
+        return emi.toFixed(2);
+      }
+
+      function submitForm() {
+        const name = document.getElementById("name").value;
+        const email = document.getElementById("email").value;
+        const mobile = document.getElementById("mobile").value;
+        const pan = document.getElementById("pan").value;
+        const password = document.getElementById("password").value;
+
+        if (!validateName(name)) {
+          alert("Invalid name. Only alphabets and spaces are allowed.");
+          return;
+        }
+
+        if (!validateEmail(email)) {
+          alert("Invalid email address.");
+          return;
+        }
+
+        if (!validatePAN(pan)) {
+          alert("Invalid PAN number. It should be in the format ABCDE1234F.");
+          return;
+        }
+
+        if (!validateMobile(mobile)) {
+          alert("Invalid mobile number. It should be 10 digits.");
+          return;
+        }
+
+        if (!validatePassword(password)) {
+          alert(
+            "Invalid password. Password should be 6 to 20 characters long, contain at least one numeric digit, one uppercase, and one lowercase letter."
+          );
+          return;
+        }
+
+        const mainOtp = Math.round(Math.random() * 2000 + 2000);
+        localStorage.setItem("mainOtp", mainOtp);
+        localStorage.setItem("name", name);
+        localStorage.setItem("mobile", mobile);
+
+        const estimatedEMI = calculateEMI(loanAmount);
+        document.getElementById("estimatedEMI").innerText =
+          "Estimated EMI: " + estimatedEMI + " Rs.";
+        alert(mainOtp);
+        window.location.href = "confirmation.html";
+      }
+    </script>
+  </body>
+</html>

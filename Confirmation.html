@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Confirmation</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #confirmationMessage {
+            background: #fff;
+            padding: 20px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        p, label {
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+        .otp-input {
+            width: 40px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin: 0 5px;
+            text-align: center;
+            font-size: 18px;
+        }
+        button {
+            padding: 10px;
+            background: #28a745;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #218838;
+        }
+        #noAttemptsMessage {
+            display: none;
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div id="confirmationMessage">
+        <h2>Confirmation</h2>
+        <p id="name"></p>
+        <p id="mobile"></p>
+        <p style="text-align: center;color: #218838;" >Your Otp Has been send</p>
+        <div id="otpSection" style="margin-top: 20px;">
+            <label for="otp1" style="margin-bottom: 20px;" >Enter OTP:</label>
+
+            <div style="margin-top: 20px;" > 
+                <input
+                    type="text"
+                    id="otp1"
+                    maxlength="1"
+                    class="otp-input"
+                    oninput="moveToNext(this, 'otp2')"
+                />
+                <input
+                    type="text"
+                    id="otp2"
+                    maxlength="1"
+                    class="otp-input"
+                    oninput="moveToNext(this, 'otp3')"
+                />
+                <input
+                    type="text"
+                    id="otp3"
+                    maxlength="1"
+                    class="otp-input"
+                    oninput="moveToNext(this, 'otp4')"
+                />
+                <input
+                    type="text"
+                    id="otp4"
+                    maxlength="1"
+                    class="otp-input"
+                />
+            </div>
+            <button id="btn" style="margin-top: 20px;" type="button" onclick="verifyOtp()">Verify OTP</button>
+        </div>
+        <p id="noAttemptsMessage">Enter valid OTP  </p>
+
+        <button id="btn" style="margin-top: 20px;background-color:white !important;color: black !important;" type="button" onclick="goback()">Go Back</button>
+
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", (event) => {
+            const name = localStorage.getItem("name");
+            const mobile = localStorage.getItem("mobile");
+            const mainOtp = localStorage.getItem("mainOtp");
+
+            if (!name || !mobile || !mainOtp) {
+                alert("Missing data. Please fill out the form again.");
+                window.location.href = "loan.html";
+                return;
+            }
+
+            document.getElementById('name').innerText=name;
+            document.getElementById('mobile').innerText=mobile;
+          
+        });
+
+        function moveToNext(current, nextFieldID) {
+            if (current.value.length === current.maxLength) {
+                document.getElementById(nextFieldID).focus();
+            }
+        }
+
+        function goback(){
+            window.location.href = "loan.html";
+        }
+        var attemptCount = 0;
+
+        function verifyOtp() {
+            if (attemptCount >= 2) {
+                document.getElementById('otpSection').style.display = 'none';
+                document.getElementById('noAttemptsMessage').style.display = 'block';
+                return;
+            }
+
+            const enteredOtp =
+                document.getElementById("otp1").value +
+                document.getElementById("otp2").value +
+                document.getElementById("otp3").value +
+                document.getElementById("otp4").value;
+            const mainOtp = localStorage.getItem("mainOtp");
+
+            if (enteredOtp === mainOtp) {
+                alert("OTP verified successfully!");
+                // Handle successful verification
+                window.location.assign('welcome.html');
+            } else {
+                attemptCount++;
+                alert(`Invalid OTP. Please try again. Attempts left: ${3 - attemptCount}`);
+            }
+        }
+    </script>
+</body>
+</html>
